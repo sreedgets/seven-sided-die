@@ -4,6 +4,7 @@ const Category = require('../db/models/category');
 const Genre = require('../db/models/genre');
 const async = require('async');
 
+
 exports.getIndex = (req, res, next) => {
     async.parallel({
         productCount: callback => {
@@ -31,7 +32,31 @@ exports.getIndex = (req, res, next) => {
                 .exec(callback);
         }
     }, (err, results) => {
-        console.log(results);
         res.render('index', {title: '7-Sided Die', err: err, data: results});
     });
 };
+
+//List of products
+exports.getProducts = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        productList: callback => {
+            Product.find({}, 'name stock vendor')
+                .populate('vendor')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('productList', {title: '7-Sided Die', err: err, data: results});
+    });
+}
