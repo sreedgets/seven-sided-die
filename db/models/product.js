@@ -8,7 +8,8 @@ const ProductSchema = new Schema(
         stock: {type: String, required: true},
         category: [{type: Schema.Types.ObjectId, ref: 'Category', required: true}],
         genre: [{type: Schema.Types.ObjectId, ref: 'Genre'}],
-        price: {type: String, required: true}
+        price: {type: String, required: true},
+        description: {type: String}
     }
 );
 
