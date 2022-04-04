@@ -60,3 +60,23 @@ exports.getProducts = (req, res, next) => {
         res.render('productList', {title: '7-Sided Die', err: err, data: results});
     });
 }
+
+//Single product
+exports.productSingle = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('productSingle', {title: '7-Sided Die', err: err, data: results});
+    });
+}

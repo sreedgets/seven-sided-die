@@ -3,12 +3,13 @@ const Schema = mongoose.Schema;
 
 const VendorSchema = new Schema(
     {
-        name: {type: String, required: true}
+        name: {type: String, required: true},
+        description: {type: String}
     }
 );
 
 VendorSchema
     .virtual('url')
-    .get(() => '/vendor' + this._id);
+    .get(() => '/vendors' + this._id);
 
 module.exports = mongoose.model('Vendor', VendorSchema);
