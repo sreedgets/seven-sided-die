@@ -64,6 +64,13 @@ exports.getProducts = (req, res, next) => {
 //Single product
 exports.productSingle = (req, res, next) => {
     async.parallel({
+        product: callback => {
+            Product.findById(req.params.id)
+                .populate('vendor')
+                .populate('category')
+                .populate('genre')
+                .exec(callback);
+        },
         categoryList: callback => {
             Category.find({}, 'name')
                 .exec(callback);
@@ -77,6 +84,9 @@ exports.productSingle = (req, res, next) => {
                 .exec(callback);
         }
     }, (err, results) => {
+        if (!results.product.description) {
+            results.product.description = 'Sorry, this product doesn\'t have a description yet.'
+        }
         res.render('productSingle', {title: '7-Sided Die', err: err, data: results});
     });
 }

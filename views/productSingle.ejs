@@ -1,7 +1,20 @@
 <%- include('header.ejs') %>
         <main>
             <section class="container">
-                hey
+                <div class="row">
+                    <p>Breadcrumbs</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 d-flex justify-content-center">
+                        <svg class="bd-placeholder-img" width="400" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="400" height="400" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                    </div>
+                    <div class="col-lg-6">
+                        <h2><%= data.product.name %></h2>
+                        <p>from <a href="<%= data.product.vendor.url %>"><i><%= data.product.vendor.name %></i></a></p>
+                        <h3><%= data.product.price %> </h3>
+                        <p><%= data.product.description %> </p>
+                    </div>
+                </div>
             </section>    
         </main>
 <%- include('footer.ejs') %>

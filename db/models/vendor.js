@@ -10,6 +10,8 @@ const VendorSchema = new Schema(
 
 VendorSchema
     .virtual('url')
-    .get(() => '/vendors' + this._id);
+    .get(function() {
+        return '/vendors/' + this._id ;
+    });
 
 module.exports = mongoose.model('Vendor', VendorSchema);

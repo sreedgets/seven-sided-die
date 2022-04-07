@@ -13,8 +13,11 @@ const ProductSchema = new Schema(
     }
 );
 
+//Don't use arrow function for the return method. Arrow functions explicitly prevent binding.
 ProductSchema
     .virtual('url')
-    .get(() => '/product/' + this._id);
+    .get(function() {
+        return '/products/' + this._id;
+    })
 
 module.exports = mongoose.model('Product', ProductSchema);
