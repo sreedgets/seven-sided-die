@@ -14,4 +14,9 @@ VendorSchema
         return '/vendors/' + this._id ;
     });
 
+VendorSchema
+    .virtual('products')
+    .get(function() {
+        return '/products/vendor/' + this._id;
+    });
 module.exports = mongoose.model('Vendor', VendorSchema);

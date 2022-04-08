@@ -90,3 +90,28 @@ exports.productSingle = (req, res, next) => {
         res.render('productSingle', {title: '7-Sided Die', err: err, data: results});
     });
 }
+
+//List of vendor products
+exports.vendorProducts = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        productList: callback => {
+            Product.find({vendor: req.params.id}, 'name stock vendor')
+                .populate('vendor')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('productList', {title: '7-Sided Die', err: err, data: results});
+    });
+}
