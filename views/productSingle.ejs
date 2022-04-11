@@ -13,6 +13,10 @@
                         <p>from <a href="<%= data.product.vendor.url %>"><i><%= data.product.vendor.name %></i></a></p>
                         <h3><%= data.product.price %> </h3>
                         <p><%= data.product.description %> </p>
+                        <div class="btn-group">
+                            <a class="btn btn-sm btn-outline-secondary" href="<%= data.product.url + '/edit' %>">Edit</a>
+                            <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+                        </div>
                     </div>
                 </div>
             </section>    

@@ -165,3 +165,52 @@ exports.genreProducts = (req, res, next) => {
         res.render('productList', {title: '7-Sided Die', err: err, data: results});
     });
 }
+
+exports.productFormGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('productForm', {title: '7-Sided Die', err: err, data: results});
+    });
+};
+
+exports.productCreatePost = (req, res, next) => {
+    res.send(req.body);
+}
+
+exports.productUpdateGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        product: callback => {
+            Product.findById(req.params.id)
+                .populate('vendor')
+                .populate('category')
+                .populate('genre')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('productForm', {title: '7-Sided Die', err: err, data: results});
+    });
+}
