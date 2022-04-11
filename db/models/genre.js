@@ -11,4 +11,10 @@ GenreSchema
     .virtual('url')
     .get(() => '/genre' + this._id);
 
+GenreSchema
+    .virtual('products')
+    .get(function() {
+        return '/products/genre/' + this._id;
+    });
+
 module.exports = mongoose.model('Genre', GenreSchema);

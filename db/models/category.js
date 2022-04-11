@@ -11,4 +11,9 @@ CategorySchema
     .virtual('url')
     .get(() => '/category/' + this._id);
 
+CategorySchema
+    .virtual('products')
+    .get(function() {
+        return '/products/category/' + this._id;
+    });
 module.exports = mongoose.model('Category', CategorySchema);
