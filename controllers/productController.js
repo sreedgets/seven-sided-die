@@ -211,6 +211,7 @@ exports.productUpdateGet = (req, res, next) => {
                 .exec(callback);
         }
     }, (err, results) => {
+        console.log(results);
         res.render('productForm', {title: '7-Sided Die', err: err, data: results});
     });
 }
