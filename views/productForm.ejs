@@ -12,9 +12,14 @@
                                 <label class="form-label" for="product-vendor">Product Vendor</label>
                                 <select class="form-select" name="product-vendor" id="product-vendor">
                                     <option value="">Select a vendor</option>
-                                    <% data.vendorList.forEach(vendor => { %>
-                                        <option value="<%= vendor._id %>"><%= vendor.name %></option>
-                                    <% }); %>
+                                    <% if (data.product != undefined) { 
+                                        data.vendorList.forEach(vendor => { %>
+                                            <option value="<%= vendor._id %>" <%= data.product.vendor.name === vendor.name ? 'selected' : '' %>><%= vendor.name %></option>
+                                    <%  });
+                                    } else { 
+                                        data.vendorList.forEach(vendor => { %>
+                                            <option value="<%= vendor._id %>"><%= vendor.name %></option>
+                                    <% });} %>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -23,21 +28,39 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="product-category">Category</label>
-                                <select class="form-select" name="product-category" id="product-category">
-                                    <option value="">Select a category</option>
-                                    <% data.categoryList.forEach(category => { %>
-                                        <option value=""><%= category.name %> </option>
-                                    <% }) %>
-                                </select>
+                                <% if(data.product != undefined) {
+                                    data.categoryList.forEach(cat => { %>
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="product-genre" id="<%= cat._id %>" value="<%= cat._id %>" <%= cat.checked %>>
+                                            <label class="form-check-label" for="<%= cat._id %> "><%= cat.name %> </label>
+                                        </div>
+                                    <% });
+                                } else {
+                                    data.categoryList.forEach(cat => { %>
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="product-genre" id="<%= cat._id %>" value="<%= cat._id %>">
+                                            <label class="form-check-label" for="<%= cat._id %> "><%= cat.name %> </label>
+                                        </div>
+                                    <% });
+                                } %>
                             </div>
                             <div class="mb-3">
                                 <label for="">Genre:</label>
-                                <% data.genreList.forEach(genre => { %>
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" name="product-genre" id="<%= genre._id %>" value="<%= genre._id %>">
-                                        <label class="form-check-label" for="<%= genre._id %> "><%= genre.name %> </label>
-                                    </div>
-                                <% }); %>
+                                <% if(data.product != undefined) { 
+                                    data.genreList.forEach(genre => { %>
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="product-genre" id="<%= genre._id %>" value="<%= genre._id %>" <%= genre.checked %>>
+                                            <label class="form-check-label" for="<%= genre._id %> "><%= genre.name %> </label>
+                                        </div>
+                                    <% }); %>
+                                <% } else {
+                                    data.genreList.forEach(genre => { %>
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="product-genre" id="<%= genre._id %>" value="<%= genre._id %>">
+                                            <label class="form-check-label" for="<%= genre._id %> "><%= genre.name %> </label>
+                                        </div>
+                                    <% }); %>
+                                <% } %>
                             </div>
                             <div class="mb-3">
                                 <label for="product-price" class="form-label">Price</label>

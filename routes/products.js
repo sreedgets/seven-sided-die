@@ -26,4 +26,7 @@ router.get('/:id/edit', productController.productUpdateGet);
 //Post new product listing
 router.post('/create', productController.productCreatePost);
 
+//Post product update
+router.post('/:id/edit', productController.productUpdatePost);
+
 module.exports = router;

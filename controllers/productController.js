@@ -211,7 +211,29 @@ exports.productUpdateGet = (req, res, next) => {
                 .exec(callback);
         }
     }, (err, results) => {
-        console.log(results);
+        for (let i = 0; i < results.genreList.length; i++) {
+            for (let g = 0; g < results.product.genre.length; g++) {
+                if(results.genreList[i]._id.toString() === results.product.genre[g]._id.toString()) {
+                    results.genreList[i].checked = 'checked';
+                } else {
+                    results.genreList[i].checked = '';
+                }
+            }
+        }
+
+        for (let i = 0; i < results.categoryList.length; i++) {
+            for (let c = 0; c < results.product.category.length; c++) {
+                if (results.categoryList[i]._id.toString() === results.product.category[c]._id.toString()) {
+                    results.categoryList[i].checked = 'checked';
+                } else {
+                    results.categoryList[i].checked = '';
+                }
+            }
+        }
         res.render('productForm', {title: '7-Sided Die', err: err, data: results});
     });
+}
+
+exports.productUpdatePost = (req, res, next) => {
+    res.send(req.body);
 }
