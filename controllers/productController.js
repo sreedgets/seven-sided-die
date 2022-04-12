@@ -214,7 +214,7 @@ exports.productUpdateGet = (req, res, next) => {
         for (let i = 0; i < results.genreList.length; i++) {
             for (let g = 0; g < results.product.genre.length; g++) {
                 if(results.genreList[i]._id.toString() === results.product.genre[g]._id.toString()) {
-                    results.genreList[i].checked = 'checked';
+                    results.genreList[i].checked = 'true';
                 } else {
                     results.genreList[i].checked = '';
                 }
@@ -224,7 +224,7 @@ exports.productUpdateGet = (req, res, next) => {
         for (let i = 0; i < results.categoryList.length; i++) {
             for (let c = 0; c < results.product.category.length; c++) {
                 if (results.categoryList[i]._id.toString() === results.product.category[c]._id.toString()) {
-                    results.categoryList[i].checked = 'checked';
+                    results.categoryList[i].checked = 'true';
                 } else {
                     results.categoryList[i].checked = '';
                 }
@@ -235,5 +235,36 @@ exports.productUpdateGet = (req, res, next) => {
 }
 
 exports.productUpdatePost = (req, res, next) => {
-    res.send(req.body);
+    if(!(req.body['product-genre'] instanceof Array)) {
+        if (typeof req.body['product-genre'] === 'undefined') {
+            req.body['product-genre'] = [];
+        } else {
+            req.body['product-genre'] = new Array(req.body['product-genre']);
+        }
+    }
+
+    if(!(req.body['product-category'] instanceof Array)) {
+        if (typeof req.body['product-category'] === 'undefined') {
+            req.body['product-category'] = [];
+        } else {
+            req.body['product-category'] = new Array(req.body['product-category']);
+        }
+    }
+
+    let product = new Product({
+        name: req.body['product-name'],
+        vendor: req.body['product-vendor'],
+        stock: req.body['product-stock'],
+        category: (typeof req.body['product-category'] === 'undefined') ? [] : req.body['product-category'],
+        genre: (typeof req.body['product-genre'] === 'undefined') ? [] : req.body['product-genre'],
+        price: req.body['product-price'],
+        description: req.body['product-description'],
+        _id: req.params.id
+    });
+
+    Product.findByIdAndUpdate(req.params.id, product, {}, (err, theProduct) => {
+        if(err) {return next(err);}
+
+        res.redirect(theProduct.url);
+    });
 }
