@@ -214,9 +214,7 @@ exports.productUpdateGet = (req, res, next) => {
         for (let i = 0; i < results.genreList.length; i++) {
             for (let g = 0; g < results.product.genre.length; g++) {
                 if(results.genreList[i]._id.toString() === results.product.genre[g]._id.toString()) {
-                    results.genreList[i].checked = 'true';
-                } else {
-                    results.genreList[i].checked = '';
+                    results.genreList[i].checked = 'checked="true"';
                 }
             }
         }
@@ -224,9 +222,7 @@ exports.productUpdateGet = (req, res, next) => {
         for (let i = 0; i < results.categoryList.length; i++) {
             for (let c = 0; c < results.product.category.length; c++) {
                 if (results.categoryList[i]._id.toString() === results.product.category[c]._id.toString()) {
-                    results.categoryList[i].checked = 'true';
-                } else {
-                    results.categoryList[i].checked = '';
+                    results.categoryList[i].checked = 'checked="true"';
                 }
             }
         }
