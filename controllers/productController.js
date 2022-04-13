@@ -186,7 +186,38 @@ exports.productFormGet = (req, res, next) => {
 };
 
 exports.productCreatePost = (req, res, next) => {
-    res.send(req.body);
+    if(!(req.body['product-genre'] instanceof Array)) {
+        if (typeof req.body['product-genre'] === 'undefined') {
+            req.body['product-genre'] = [];
+        } else {
+            req.body['product-genre'] = new Array(req.body['product-genre']);
+        }
+    }
+
+    if(!(req.body['product-category'] instanceof Array)) {
+        if (typeof req.body['product-category'] === 'undefined') {
+            req.body['product-category'] = [];
+        } else {
+            req.body['product-category'] = new Array(req.body['product-category']);
+        }
+    }
+
+    let product = new Product({
+        name: req.body['product-name'],
+        vendor: req.body['product-vendor'],
+        stock: req.body['product-stock'],
+        category: req.body['product-category'],
+        genre: req.body['product-genre'],
+        price: req.body['product-price'],
+        description: req.body['product-description']
+    });
+
+    product.save(err => {
+        if(err) {return next(err);}
+
+        res.redirect(product.url);
+    })
+    //res.send(req.body);
 }
 
 exports.productUpdateGet = (req, res, next) => {
