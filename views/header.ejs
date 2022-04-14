@@ -24,6 +24,9 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="/category">All</a>
+                                    </li>
                                     <% for(let i = 0; i < data.categoryList.length; i++) { %>
                                         <li>
                                             <a class="dropdown-item" href="<%= data.categoryList[i].products %>">

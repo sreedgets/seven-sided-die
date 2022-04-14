@@ -22,3 +22,96 @@ exports.getCategories = (req, res, next) => {
         res.render('categoryList', {title: '7-Sided Die', err: err, data: results});
     });
 }
+
+exports.categoryCreateGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('categoryForm', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.categoryCreatePost = (req, res, next) => {
+    let category = new Category({
+        name: req.body['category-name']
+    });
+
+    category.save(e => {
+        if(e) {return next(e);}
+
+        res.redirect('/category');
+    });
+}
+
+exports.categoryDeleteGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        products: callback => {
+            Product.find({category: req.params.id}, 'name')
+                .exec(callback);
+        },
+        category: callback => {
+            Category.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        res.render('categoryDelete', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.categoryDeletePost = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        products: callback => {
+            Product.find({category: req.params.id}, 'name')
+                .exec(callback);
+        },
+        category: callback => {
+            Category.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if(err) {return next(err);}
+
+        if(results.products > 0) {
+            res.render('categoryDelete', {title: '7-Sided Die', err: err, data: results});
+        } else {
+            Category.findByIdAndDelete(req.body['cat-id'], err => {
+                if(err) {return next(err);}
+
+                res.redirect('/category');
+            });
+        }
+    });
+}

@@ -216,8 +216,7 @@ exports.productCreatePost = (req, res, next) => {
         if(err) {return next(err);}
 
         res.redirect(product.url);
-    })
-    //res.send(req.body);
+    });
 }
 
 exports.productUpdateGet = (req, res, next) => {
