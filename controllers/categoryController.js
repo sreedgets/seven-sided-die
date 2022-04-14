@@ -115,3 +115,40 @@ exports.categoryDeletePost = (req, res, next) => {
         }
     });
 }
+
+exports.categoryUpdateGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        category: callback => {
+            Category.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if (err) {return next(err);}
+
+        res.render('categoryForm', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.categoryUpdatePost = (req, res, next) => {
+    let category = new Category({
+        name: req.body['category-name'],
+        _id: req.params.id
+    });
+
+    Category.findByIdAndUpdate(req.params.id, category, {}, (err, theCat) => {
+        if(err) {return next(err);}
+
+        res.redirect('/category');
+    });
+}

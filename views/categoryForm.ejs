@@ -10,9 +10,10 @@
                                 </label>
                                 <input 
                                     class="form-control" 
-                                    type="text" name="category-name" 
+                                    type="text" 
+                                    name="category-name" 
                                     id="category-name" 
-                                    value=""
+                                    value="<%= data.category != undefined ? data.category.name : '' %>"
                                 />
                             </div>
                             <button class="btn btn-primary" type="submit">Submit</button>

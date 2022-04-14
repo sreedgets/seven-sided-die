@@ -16,8 +16,9 @@
                                     <div class="card-body">
                                       <h5 class="card-title"><%= category.name %></h5>
                                       <div class="btn-group">
-                                          <a href="<%= category.products %> " class="btn btn-primary">View Products</a>
-                                          <a href="<%= 'category/' + category._id + '/delete' %> " class="btn btn-danger">Delete</a>
+                                          <a href="<%= category.products %> " class="btn btn-sm btn-primary">Products</a>
+                                          <a href="<%= 'category/' + category._id + '/update' %> " class="btn btn-sm btn-secondary">Update</a>
+                                          <a href="<%= 'category/' + category._id + '/delete' %> " class="btn btn-sm btn-danger">Delete</a>
                                       </div>
                                     </div>
                                 </div>
