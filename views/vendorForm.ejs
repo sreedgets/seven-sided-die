@@ -1,0 +1,25 @@
+<%- include('header.ejs') %>
+        <main>
+            <section class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form action="" method="post">
+                            <div class="mb-3">
+                                <label for="category-name" class="form-label">
+                                    Vendor Name
+                                </label>
+                                <input 
+                                    class="form-control" 
+                                    type="text" 
+                                    name="vendor-name" 
+                                    id="vendor-name" 
+                                    value="<%= data.vendor != undefined ? data.vendor.name : '' %>"
+                                />
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </section>    
+        </main>
+<%- include('footer.ejs') %>

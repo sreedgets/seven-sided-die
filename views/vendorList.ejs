@@ -6,17 +6,24 @@
                     filters
                 </div>
                 <div class="col-lg-10">
+                    <div class="d-flex justify-content-end mb-4">
+                        <a class="btn btn-primary" href="/vendors/create">Add Vendor</a>
+                    </div>
                     <div class="row">
                         <% data.vendorList.forEach(vendor => { %>
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
-                                      <h5 class="card-title"><%= vendor.name %></h5>
-                                      <a href="<%= vendor.products %> " class="btn btn-primary">View Products</a>
+                                        <h5 class="card-title"><%= vendor.name %></h5>
+                                        <div class="btn-group">
+                                            <a href="<%= vendor.products %>" class="btn btn-sm btn-primary">Products</a>
+                                            <a href="" class="btn btn-sm btn-secondary">Edit</a>
+                                            <a href="<%= 'vendors/' + vendor._id + '/delete' %>" class="btn btn-sm btn-danger">Delete</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        <% }) %>
+                        <% }); %>
                     </div>
                 </div>
             </div>
