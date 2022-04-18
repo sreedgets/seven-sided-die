@@ -57,3 +57,67 @@ exports.genreCreatePost = (req, res, next) => {
         res.redirect('/genres');
     });
 }
+
+exports.genreDeleteGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        products: callback => {
+            Product.find({genre: req.params.id}, 'name')
+                .exec(callback);
+        },
+        genre: callback => {
+            Genre.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if(err) {return next(err);}
+        
+        res.render('genreDelete', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.genreDeletePost = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        products: callback => {
+            Product.find({genre: req.params.id}, 'name')
+                .exec(callback);
+        },
+        genre: callback => {
+            Genre.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if(err) {return next(err);}
+
+        if(results.products > 0) {
+            res.render('genreDelete', {title: '7-Sided Die', err: err, data: results});
+        }
+        
+        Genre.findByIdAndDelete(req.body['genre-id'], err => {
+            if(err) {return next(err);}
+
+            res.redirect('/genres');
+        });
+    });
+}

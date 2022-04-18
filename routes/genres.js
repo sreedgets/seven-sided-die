@@ -9,4 +9,8 @@ router.get('/create', genreController.genreCreateGet);
 
 router.post('/create', genreController.genreCreatePost);
 
+router.get('/:id/delete', genreController.genreDeleteGet);
+
+router.post('/:id/delete', genreController.genreDeletePost);
+
 module.exports = router;
