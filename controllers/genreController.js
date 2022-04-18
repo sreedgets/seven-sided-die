@@ -121,3 +121,40 @@ exports.genreDeletePost = (req, res, next) => {
         });
     });
 }
+
+exports.genreUpdateGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        genre: callback => {
+            Genre.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if(err) {return next(err);}
+        
+        res.render('genreForm', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.genreUpdatePost = (req, res, next) => {
+    let genre = new Genre({
+        name: req.body['genre-name'],
+        _id: req.params.id
+    });
+
+    Genre.findByIdAndUpdate(req.params.id, genre, {}, (err, theGenre) => {
+        if(err) {return next(err);}
+
+        res.redirect('/genres');
+    });
+}

@@ -13,4 +13,8 @@ router.get('/:id/delete', genreController.genreDeleteGet);
 
 router.post('/:id/delete', genreController.genreDeletePost);
 
+router.get('/:id/update', genreController.genreUpdateGet);
+
+router.post('/:id/update', genreController.genreUpdatePost);
+
 module.exports = router;
