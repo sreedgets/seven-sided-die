@@ -115,3 +115,40 @@ exports.vendorDeletePost = (req, res, next) => {
         });
     });
 }
+
+exports.vendorUpdateGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        vendor: callback => {
+            Vendor.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        if(err) {return next(err);}
+
+        res.render('vendorForm', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.vendorUpdatePost = (req, res, next) => {
+    let vendor = new Vendor({
+        name: req.body['vendor-name'],
+        _id: req.params.id
+    });
+
+    Vendor.findByIdAndUpdate(req.params.id, vendor, {}, (err, theVendor) => {
+        if(err) {return next(err);}
+
+        res.redirect('/vendors');
+    })
+}

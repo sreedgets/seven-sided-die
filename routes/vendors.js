@@ -13,4 +13,8 @@ router.get('/:id/delete', vendorController.vendorDeleteGet);
 
 router.post('/:id/delete', vendorController.vendorDeletePost);
 
+router.get('/:id/update', vendorController.vendorUpdateGet);
+
+router.post('/:id/update', vendorController.vendorUpdatePost);
+
 module.exports = router;

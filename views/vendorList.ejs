@@ -17,7 +17,7 @@
                                         <h5 class="card-title"><%= vendor.name %></h5>
                                         <div class="btn-group">
                                             <a href="<%= vendor.products %>" class="btn btn-sm btn-primary">Products</a>
-                                            <a href="" class="btn btn-sm btn-secondary">Edit</a>
+                                            <a href="<%= 'vendors/' + vendor._id + '/update' %> " class="btn btn-sm btn-secondary">Edit</a>
                                             <a href="<%= 'vendors/' + vendor._id + '/delete' %>" class="btn btn-sm btn-danger">Delete</a>
                                         </div>
                                     </div>
