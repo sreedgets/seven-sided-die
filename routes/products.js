@@ -1,9 +1,15 @@
 const express = require('express');
 var router = express.Router();
 var productController = require('../controllers/productController');
+const multer = require('multer');
+const upload = multer({dest: 'public/images/'});
 
 //Get product list
 router.get('/', productController.getProducts);
+
+//TEST FORM
+router.get('/test', productController.testFormGet);
+router.post('/test', productController.testFormPost);
 
 //Get vendor product list
 router.get('/vendor/:id', productController.vendorProducts);

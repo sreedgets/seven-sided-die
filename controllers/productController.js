@@ -3,6 +3,8 @@ const Vendor = require('../db/models/vendor');
 const Category = require('../db/models/category');
 const Genre = require('../db/models/genre');
 const async = require('async');
+const multer = require('multer');
+const upload = multer({dest: 'public/images/'});
 
 
 exports.getIndex = (req, res, next) => {
@@ -186,7 +188,8 @@ exports.productFormGet = (req, res, next) => {
 };
 
 exports.productCreatePost = (req, res, next) => {
-    if(!(req.body['product-genre'] instanceof Array)) {
+    res.send(req.body);
+  /*   if(!(req.body['product-genre'] instanceof Array)) {
         if (typeof req.body['product-genre'] === 'undefined') {
             req.body['product-genre'] = [];
         } else {
@@ -216,7 +219,7 @@ exports.productCreatePost = (req, res, next) => {
         if(err) {return next(err);}
 
         res.redirect(product.url);
-    });
+    }); */
 }
 
 exports.productUpdateGet = (req, res, next) => {
@@ -293,4 +296,27 @@ exports.productUpdatePost = (req, res, next) => {
 
         res.redirect(theProduct.url);
     });
+}
+
+exports.testFormGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        }
+    }, (err, results) => {
+        res.render('testForm', {title: '7-Sided Die', err: err, data: results});
+    });
+};
+
+exports.testFormPost = (req, res, next) => {
+    res.send(req.body);
 }

@@ -1,0 +1,25 @@
+<%- include('header.ejs') %>
+        <main>
+            <section class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="category-name" class="form-label">
+                                    Category Name
+                                </label>
+                                <input 
+                                    class="form-control" 
+                                    type="text" 
+                                    name="category-name" 
+                                    id="category-name" 
+                                    value="<%= data.category != undefined ? data.category.name : '' %>"
+                                />
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </section>    
+        </main>
+<%- include('footer.ejs') %>
