@@ -2,14 +2,25 @@ const express = require('express');
 var router = express.Router();
 var productController = require('../controllers/productController');
 const multer = require('multer');
-const upload = multer({dest: 'public/images/'});
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images/products/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({storage: storage});
 
 //Get product list
 router.get('/', productController.getProducts);
 
 //TEST FORM
 router.get('/test', productController.testFormGet);
-router.post('/test', productController.testFormPost);
+router.post('/test', upload.single('image'), productController.testFormPost);
 
 //Get vendor product list
 router.get('/vendor/:id', productController.vendorProducts);
@@ -30,9 +41,9 @@ router.get('/:id', productController.productSingle);
 router.get('/:id/edit', productController.productUpdateGet);
 
 //Post new product listing
-router.post('/create', productController.productCreatePost);
+router.post('/create', upload.single('productImage'), productController.productCreatePost);
 
 //Post product update
-router.post('/:id/edit', productController.productUpdatePost);
+router.post('/:id/edit', upload.single('productImage'), productController.productUpdatePost);
 
 module.exports = router;

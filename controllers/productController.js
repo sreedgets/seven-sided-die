@@ -188,8 +188,7 @@ exports.productFormGet = (req, res, next) => {
 };
 
 exports.productCreatePost = (req, res, next) => {
-    res.send(req.body);
-  /*   if(!(req.body['product-genre'] instanceof Array)) {
+    if(!(req.body['product-genre'] instanceof Array)) {
         if (typeof req.body['product-genre'] === 'undefined') {
             req.body['product-genre'] = [];
         } else {
@@ -212,14 +211,15 @@ exports.productCreatePost = (req, res, next) => {
         category: req.body['product-category'],
         genre: req.body['product-genre'],
         price: req.body['product-price'],
-        description: req.body['product-description']
+        description: req.body['product-description'],
+        image: req.file.filename
     });
 
     product.save(err => {
         if(err) {return next(err);}
 
         res.redirect(product.url);
-    }); */
+    });
 }
 
 exports.productUpdateGet = (req, res, next) => {
@@ -279,22 +279,29 @@ exports.productUpdatePost = (req, res, next) => {
             req.body['product-category'] = new Array(req.body['product-category']);
         }
     }
-
-    let product = new Product({
-        name: req.body['product-name'],
-        vendor: req.body['product-vendor'],
-        stock: req.body['product-stock'],
-        category: (typeof req.body['product-category'] === 'undefined') ? [] : req.body['product-category'],
-        genre: (typeof req.body['product-genre'] === 'undefined') ? [] : req.body['product-genre'],
-        price: req.body['product-price'],
-        description: req.body['product-description'],
-        _id: req.params.id
-    });
-
-    Product.findByIdAndUpdate(req.params.id, product, {}, (err, theProduct) => {
-        if(err) {return next(err);}
-
-        res.redirect(theProduct.url);
+    
+    async.parallel({
+        product: callback => {
+            Product.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        let product = new Product({
+            name: req.body['product-name'],
+            vendor: req.body['product-vendor'],
+            stock: req.body['product-stock'],
+            category: (typeof req.body['product-category'] === 'undefined') ? [] : req.body['product-category'],
+            genre: (typeof req.body['product-genre'] === 'undefined') ? [] : req.body['product-genre'],
+            price: req.body['product-price'],
+            description: req.body['product-description'],
+            image: req.file ? req.file.filename : results.product.image,
+            _id: req.params.id
+        });
+    
+        Product.findByIdAndUpdate(req.params.id, product, {}, (err, theProduct) => {
+            if(err) {return next(err);}
+    
+            res.redirect(theProduct.url);
+        });
     });
 }
 
@@ -318,5 +325,5 @@ exports.testFormGet = (req, res, next) => {
 };
 
 exports.testFormPost = (req, res, next) => {
-    res.send(req.body);
+    res.send(req.file);
 }

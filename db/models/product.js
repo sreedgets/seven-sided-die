@@ -9,7 +9,8 @@ const ProductSchema = new Schema(
         category: [{type: Schema.Types.ObjectId, ref: 'Category', required: true}],
         genre: [{type: Schema.Types.ObjectId, ref: 'Genre'}],
         price: {type: String, required: true},
-        description: {type: String}
+        description: {type: String},
+        image: {type: String}
     }
 );
 
