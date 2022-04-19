@@ -212,7 +212,7 @@ exports.productCreatePost = (req, res, next) => {
         genre: req.body['product-genre'],
         price: req.body['product-price'],
         description: req.body['product-description'],
-        image: req.file.filename
+        image: req.file ? req.file.filename : null
     });
 
     product.save(err => {
@@ -302,6 +302,36 @@ exports.productUpdatePost = (req, res, next) => {
     
             res.redirect(theProduct.url);
         });
+    });
+}
+
+exports.productDeleteGet = (req, res, next) => {
+    async.parallel({
+        categoryList: callback => {
+            Category.find({}, 'name')
+                .exec(callback);
+        },
+        genreList: callback => {
+            Genre.find({}, 'name')
+                .exec(callback);
+        },
+        vendorList: callback => {
+            Vendor.find({}, 'name')
+                .exec(callback);
+        },
+        product: callback => {
+            Product.findById(req.params.id, callback);
+        }
+    }, (err, results) => {
+        res.render('productDelete', {title: '7-Sided Die', err: err, data: results});
+    });
+}
+
+exports.productDeletePost = (req, res, next) => {
+    Product.findByIdAndDelete(req.body['product-id'], err => {
+        if(err) {return next(err);}
+
+        res.redirect('/products');
     });
 }
 

@@ -46,4 +46,10 @@ router.post('/create', upload.single('productImage'), productController.productC
 //Post product update
 router.post('/:id/edit', upload.single('productImage'), productController.productUpdatePost);
 
+//Get product delete form
+router.get('/:id/delete', productController.productDeleteGet);
+
+//Delete product
+router.post('/:id/delete', productController.productDeletePost);
+
 module.exports = router;
