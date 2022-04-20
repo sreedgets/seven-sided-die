@@ -19,8 +19,8 @@ const upload = multer({storage: storage});
 router.get('/', productController.getProducts);
 
 //TEST FORM
-router.get('/test', productController.testFormGet);
-router.post('/test', upload.single('image'), productController.testFormPost);
+/* router.get('/test', productController.testFormGet);
+router.post('/test', productController.testFormPost); */
 
 //Get vendor product list
 router.get('/vendor/:id', productController.vendorProducts);

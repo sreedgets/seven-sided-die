@@ -3,10 +3,15 @@
             <section class="container">
                 <div class="row">
                     <div class="col-lg-4">
+                        <% if (typeof errors != 'undefined') { 
+                            errors.forEach(err => { %>
+                                <p><%= err.msg %></p>
+                            <% }); %>
+                        <% } %>
                         <form method="POST" action="" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="product-name" class="form-label">Product Name</label>
-                                <input class="form-control" type="text" name="product-name" id="product-name" value="<%= undefined === data.product ? '' : data.product.name %> ">
+                                <input class="form-control" type="text" name="product-name" id="product-name" value="<%- undefined === data.product ? '' : data.product.name %> ">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="product-vendor">Product Vendor</label>
@@ -14,7 +19,7 @@
                                     <option value="">Select a vendor</option>
                                     <% if (data.product != undefined) { 
                                         data.vendorList.forEach(vendor => { %>
-                                            <option value="<%= vendor._id %>" <%= data.product.vendor.name === vendor.name ? 'selected' : '' %>><%= vendor.name %></option>
+                                            <option value="<%= vendor._id %>" <%= data.product.vendor._id === vendor._id ? 'selected' : '' %>><%= vendor.name %></option>
                                     <%  });
                                     } else { 
                                         data.vendorList.forEach(vendor => { %>
