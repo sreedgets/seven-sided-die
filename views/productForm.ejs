@@ -18,8 +18,10 @@
                                 <select class="form-select" name="product-vendor" id="product-vendor">
                                     <option value="">Select a vendor</option>
                                     <% if (data.product != undefined) { 
+                                        console.log(data.product.vendor)
+                                        console.log(data.vendorList)
                                         data.vendorList.forEach(vendor => { %>
-                                            <option value="<%= vendor._id %>" <%= data.product.vendor._id === vendor._id ? 'selected' : '' %>><%= vendor.name %></option>
+                                            <option value="<%= vendor._id %>" <%= data.product.vendor._id.toString() === vendor._id.toString() ? 'selected' : '' %>><%= vendor.name %></option>
                                     <%  });
                                     } else { 
                                         data.vendorList.forEach(vendor => { %>

@@ -3,6 +3,7 @@ const Vendor = require('../db/models/vendor');
 const Category = require('../db/models/category');
 const Genre = require('../db/models/genre');
 const async = require('async');
+const { body, validationResult } = require('express-validator');
 
 exports.getVendors = (req, res, next) => {
     async.parallel({
@@ -42,17 +43,48 @@ exports.vendorCreateGet = (req, res, next) => {
     });
 }
 
-exports.vendorCreatePost = (req, res, next) => {
-    let vendor = new Vendor({
-        name: req.body['vendor-name']
-    });
+exports.vendorCreatePost = [
+    body('vendor-name', 'Vendor name must not be empty')
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    vendor.save(e => {
-        if(e) {return next(e);}
+        let vendor = new Vendor({
+            name: req.body['vendor-name']
+        });
 
-        res.redirect('/vendors');
-    });
-}
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+                if (err) {return next(err);}
+
+                results.vendor = vendor;
+
+                res.render('vendorForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            vendor.save(e => {
+                if(e) {return next(e);}
+        
+                res.redirect('/vendors');
+            });
+        }
+    }
+]
 
 exports.vendorDeleteGet = (req, res, next) => {
     async.parallel({
@@ -140,15 +172,46 @@ exports.vendorUpdateGet = (req, res, next) => {
     });
 }
 
-exports.vendorUpdatePost = (req, res, next) => {
-    let vendor = new Vendor({
-        name: req.body['vendor-name'],
-        _id: req.params.id
-    });
+exports.vendorUpdatePost = [
+    body('vendor-name', 'Vendor name must not be empty')
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    Vendor.findByIdAndUpdate(req.params.id, vendor, {}, (err, theVendor) => {
-        if(err) {return next(err);}
+        let vendor = new Vendor({
+            name: req.body['vendor-name'],
+            _id: req.params.id
+        });
+    
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+                if(err) {return next(err);}
 
-        res.redirect('/vendors');
-    })
-}
+                results.vendor = vendor;
+        
+                res.render('vendorForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            Vendor.findByIdAndUpdate(req.params.id, vendor, {}, (err, theVendor) => {
+                if(err) {return next(err);}
+        
+                res.redirect('/vendors');
+            });
+        }
+    }
+]

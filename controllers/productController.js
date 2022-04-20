@@ -53,11 +53,12 @@ exports.getProducts = (req, res, next) => {
                 .exec(callback);
         },
         productList: callback => {
-            Product.find({}, 'name stock vendor')
+            Product.find({})
                 .populate('vendor')
                 .exec(callback);
         }
     }, (err, results) => {
+
         res.render('productList', {title: '7-Sided Die', err: err, data: results});
     });
 }
@@ -185,7 +186,7 @@ exports.productFormGet = (req, res, next) => {
         res.render('productForm', {title: '7-Sided Die', err: err, data: results});
     });
 };
-
+``
 exports.productCreatePost = [
     (req, res, next) => {
         if(!(req.body['product-genre'] instanceof Array)) {
@@ -384,7 +385,6 @@ exports.productUpdatePost = [
                 }
 
                 results.product = product;
-                console.log(results.product);
 
                 res.render('productForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
             } else {
@@ -397,48 +397,6 @@ exports.productUpdatePost = [
         });
     }
 ];
-
-/* exports.productUpdatePost = (req, res, next) => {
-    if(!(req.body['product-genre'] instanceof Array)) {
-        if (typeof req.body['product-genre'] === 'undefined') {
-            req.body['product-genre'] = [];
-        } else {
-            req.body['product-genre'] = new Array(req.body['product-genre']);
-        }
-    }
-
-    if(!(req.body['product-category'] instanceof Array)) {
-        if (typeof req.body['product-category'] === 'undefined') {
-            req.body['product-category'] = [];
-        } else {
-            req.body['product-category'] = new Array(req.body['product-category']);
-        }
-    }
-    
-    async.parallel({
-        product: callback => {
-            Product.findById(req.params.id, callback);
-        }
-    }, (err, results) => {
-        let product = new Product({
-            name: req.body['product-name'],
-            vendor: req.body['product-vendor'],
-            stock: req.body['product-stock'],
-            category: (typeof req.body['product-category'] === 'undefined') ? [] : req.body['product-category'],
-            genre: (typeof req.body['product-genre'] === 'undefined') ? [] : req.body['product-genre'],
-            price: req.body['product-price'],
-            description: req.body['product-description'],
-            image: req.file ? req.file.filename : results.product.image,
-            _id: req.params.id
-        });
-    
-        Product.findByIdAndUpdate(req.params.id, product, {}, (err, theProduct) => {
-            if(err) {return next(err);}
-    
-            res.redirect(theProduct.url);
-        });
-    });
-} */
 
 exports.productDeleteGet = (req, res, next) => {
     async.parallel({

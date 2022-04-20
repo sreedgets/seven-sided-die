@@ -3,6 +3,7 @@ const Vendor = require('../db/models/vendor');
 const Category = require('../db/models/category');
 const Genre = require('../db/models/genre');
 const async = require('async');
+const { body, validationResult } = require('express-validator');
 
 exports.getCategories = (req, res, next) => {
     async.parallel({
@@ -42,17 +43,47 @@ exports.categoryCreateGet = (req, res, next) => {
     });
 }
 
-exports.categoryCreatePost = (req, res, next) => {
-    let category = new Category({
-        name: req.body['category-name']
-    });
+exports.categoryCreatePost = [
+    body('category-name', 'Category name must not be empty')
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    category.save(e => {
-        if(e) {return next(e);}
+        let category = new Category({
+            name: req.body['category-name']
+        });
 
-        res.redirect('/category');
-    });
-}
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+
+                results.category = category;
+
+                res.render('categoryForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            category.save(e => {
+                if(e) {return next(e);}
+        
+                res.redirect('/category');
+            });
+        }
+    }
+]
 
 exports.categoryDeleteGet = (req, res, next) => {
     async.parallel({
@@ -140,15 +171,46 @@ exports.categoryUpdateGet = (req, res, next) => {
     });
 }
 
-exports.categoryUpdatePost = (req, res, next) => {
-    let category = new Category({
-        name: req.body['category-name'],
-        _id: req.params.id
-    });
+exports.categoryUpdatePost = [
+    body('category-name', 'Category name must not be empty')
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    Category.findByIdAndUpdate(req.params.id, category, {}, (err, theCat) => {
-        if(err) {return next(err);}
+        let category = new Category({
+            name: req.body['category-name'],
+            _id: req.params.id
+        });
 
-        res.redirect('/category');
-    });
-}
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+                if (err) {return next(err);}
+
+                results.category = category;
+        
+                res.render('categoryForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            Category.findByIdAndUpdate(req.params.id, category, {}, (err, theCat) => {
+                if(err) {return next(err);}
+        
+                res.redirect('/category');
+            });
+        }
+    }
+]

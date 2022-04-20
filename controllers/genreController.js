@@ -3,6 +3,7 @@ const Vendor = require('../db/models/vendor');
 const Category = require('../db/models/category');
 const Genre = require('../db/models/genre');
 const async = require('async');
+const { body, validationResult } = require('express-validator');
 
 exports.getGenres = (req, res, next) => {
     async.parallel({
@@ -46,17 +47,45 @@ exports.genreCreateGet = (req, res, next) => {
     });
 }
 
-exports.genreCreatePost = (req, res, next) => {
-    let genre = new Genre({
-        name: req.body['genre-name']
-    });
+exports.genreCreatePost = [
+    body('genre-name', 'Product name must not be empty').trim().isLength({min:1}).escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    genre.save(e => {
-        if(e) {return next(e);}
+        let genre = new Genre({
+            name: req.body['genre-name']
+        });
 
-        res.redirect('/genres');
-    });
-}
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+                if(err) {return next(err);}
+
+                results.genre = genre;
+                
+                res.render('genreForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            genre.save(e => {
+                if(e) {return next(e);}
+        
+                res.redirect('/genres');
+            });
+        }
+    }
+]
 
 exports.genreDeleteGet = (req, res, next) => {
     async.parallel({
@@ -146,7 +175,48 @@ exports.genreUpdateGet = (req, res, next) => {
     });
 }
 
-exports.genreUpdatePost = (req, res, next) => {
+exports.genreUpdatePost = [
+    body('genre-name', 'Genre name must not be empty').trim().isLength({min:1}).escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        let genre = new Genre({
+            name: req.body['genre-name'],
+            _id: req.params.id
+        });
+
+        if (!errors.isEmpty()) {
+            async.parallel({
+                categoryList: callback => {
+                    Category.find({}, 'name')
+                        .exec(callback);
+                },
+                genreList: callback => {
+                    Genre.find({}, 'name')
+                        .exec(callback);
+                },
+                vendorList: callback => {
+                    Vendor.find({}, 'name')
+                        .exec(callback);
+                }
+            }, (err, results) => {
+                if(err) {return next(err);}
+
+                results.genre = genre;
+                
+                res.render('genreForm', {title: '7-Sided Die', err: err, data: results, errors: errors.array()});
+            });
+        } else {
+            Genre.findByIdAndUpdate(req.params.id, genre, {}, (err, theGenre) => {
+                if(err) {return next(err);}
+        
+                res.redirect('/genres');
+            });
+        }
+    }
+]
+
+/* exports.genreUpdatePost = (req, res, next) => {
     let genre = new Genre({
         name: req.body['genre-name'],
         _id: req.params.id
@@ -157,4 +227,4 @@ exports.genreUpdatePost = (req, res, next) => {
 
         res.redirect('/genres');
     });
-}
+} */

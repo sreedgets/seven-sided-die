@@ -3,6 +3,11 @@
             <section class="container">
                 <div class="row">
                     <div class="col-lg-4">
+                        <% if (typeof errors != 'undefined') { 
+                            errors.forEach(err => { %>
+                                <p><%= err.msg %></p>
+                            <% }); %>
+                        <% } %>
                         <form action="" method="post">
                             <div class="mb-3">
                                 <label for="vendor-name" class="form-label">
